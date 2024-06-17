@@ -13,6 +13,7 @@ from contextlib import suppress
 from timeit import default_timer
 from types import SimpleNamespace, TracebackType
 from typing import (
+    Final,
     Any,
     Awaitable,
     Callable,
@@ -75,7 +76,6 @@ from aiohttp.connector import (
 from aiohttp.cookiejar import CookieJar
 from aiohttp.helpers import (
     DEBUG,
-    PY_36,
     BasicAuth,
     TimeoutHandle,
     ceil_timeout,
@@ -88,7 +88,7 @@ from aiohttp.http import WS_KEY, HttpVersion, WebSocketReader, WebSocketWriter
 from aiohttp.http_websocket import WSHandshakeError, WSMessage, ws_ext_gen, ws_ext_parse
 from aiohttp.streams import FlowControlDataQueue
 from aiohttp.tracing import Trace, TraceConfig
-from aiohttp.typedefs import Final, JSONEncoder, LooseCookies, LooseHeaders, StrOrURL
+from aiohttp.typedefs import JSONEncoder, LooseCookies, LooseHeaders, StrOrURL
 from aiotest import events
 from aiotest.exception import CatchResponseError
 from aiotest import runners
@@ -348,10 +348,7 @@ class ClientSession:
 
     def __del__(self, _warnings: Any = warnings) -> None:
         if not self.closed:
-            if PY_36:
-                kwargs = {"source": self}
-            else:
-                kwargs = {}
+            kwargs = {"source": self}
             _warnings.warn(
                 f"Unclosed client session {self!r}", ResourceWarning, **kwargs
             )
